@@ -60,7 +60,8 @@ rule assign_lineages:
         path = workflow.current_basedir,
         cores = workflow.cores
     output:
-        report = config["outdir"] + "/lineage_report.csv"
+        report = config["outdir"] + "/lineage_report.csv",
+        summary = config["outdir"] + "/global_lineage_information.csv"
     run:
         query_sequences = query_sequence.fetch("query_store")
         num_query_seqs = len(query_sequences.split(","))
@@ -71,6 +72,7 @@ rule assign_lineages:
                         "--configfile {input.config:q} "
                         "--config "
                         "query_sequences={config[query_sequences]} "
+                        "lineages_csv={config[lineages_csv]} "
                         "outdir={params.outdir:q} "
                         "query_fasta={input.query:q} "
                         "representative_aln={input.aln:q} "

@@ -72,7 +72,7 @@ rule gather_reports:
         reports = expand(config["outdir"] + "/temp/{query}.txt", query=config["query_sequences"]),
         key=config["key"]
     output:
-        config["outdir"] + "/lineage_report.csv"
+        report = config["outdir"] + "/lineage_report.csv"
     run:
         key_dict = {}
         with open(input.key, "r") as f:
@@ -81,48 +81,46 @@ rule gather_reports:
                 taxon,key = l.split(",")
                 key_dict[key] = taxon
 
-        fw=open(output[0],"w")
-
-        fw.write("taxon,lineage,SH-alrt,UFbootstrap\n")
-        for lineage_report in input.reports:
-            
-            with open(lineage_report, "r") as f:
-                for l in f:
-                    l=l.rstrip()
-                    tokens = l.split(",")
-                    lineage,support = tokens[1],tokens[2]
-                    taxon = key_dict[tokens[0]]
-                    bootstrap = ""
-                    print(support)
-                    support = support.split("/")
-                    if len(support) == 3: 
-                        old,alrt,ufboot = support
-                        bootstrap = ufboot.split('.')[0]
-                        alrt = alrt.split('.')[0]
-                        print("alrt",alrt,"bootstrap",bootstrap)
-                    elif len(support) == 2:
-                        alrt,ufboot = support
-                        bootstrap = ufboot.split('.')[0]
-                        alrt = alrt.split('.')[0]
-                        print("alrt",alrt,"bootstrap",bootstrap)
-                    else:
-                        alrt=0
-                        bootstrap=0
-
-                    fw.write(f"{taxon},{lineage},{alrt},{bootstrap}\n")
-        fw.close()
+        with open(output.report,"w") as fw:
+            print("opening this file:",output.report)
+            fw.write("taxon,lineage,SH-alrt,UFbootstrap\n")
+            for lineage_report in input.reports:
+                
+                with open(lineage_report, "r") as f:
+                    for l in f:
+                        l=l.rstrip()
+                        tokens = l.split(",")
+                        lineage,support = tokens[1],tokens[2]
+                        taxon = key_dict[tokens[0]]
+                        bootstrap = ""
+                        print(support)
+                        support = support.split("/")
+                        if len(support) == 3: 
+                            old,alrt,ufboot = support
+                            bootstrap = ufboot.split('.')[0]
+                            alrt = alrt.split('.')[0]
+                            print("alrt",alrt,"bootstrap",bootstrap)
+                        elif len(support) == 2:
+                            alrt,ufboot = support
+                            bootstrap = ufboot.split('.')[0]
+                            alrt = alrt.split('.')[0]
+                            print("alrt",alrt,"bootstrap",bootstrap)
+                        else:
+                            alrt=0
+                            bootstrap=0
+                        
+                        fw.write(f"{taxon},{lineage},{alrt},{bootstrap}\n")
 
 rule report_results:
     input:
         csv = config["outdir"] + "/lineage_report.csv",
         lineages_csv = config["lineages_csv"]
-    params:
-        outdir = config["outdir"]
     output:
         config["outdir"] + "/global_lineage_information.csv"
     shell:
         """
-        report_results.py  --p {input.csv} \
-        --b {input.lineages_csv} \
-        --o {params.outdir:q} 
+        report_results.py \
+        -p {input.csv} \
+        -b {input.lineages_csv} \
+        -o {output:q} 
         """

@@ -1,4 +1,4 @@
-name: pangolin
+name: pangolin-web
 channels:
   - conda-forge
   - bioconda

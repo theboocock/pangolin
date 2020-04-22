@@ -8,16 +8,15 @@ import report_classes as classes
 
 parser = argparse.ArgumentParser(description="Results generator script")
 
-parser.add_argument("--p", required=True, help="pangolin output")
-parser.add_argument("--b", required=True, help="background data csv ")
-parser.add_argument("--o", default="./", help="output directory")
+parser.add_argument("-p", required=True, help="pangolin output")
+parser.add_argument("-b", required=True, help="background data csv")
+parser.add_argument("-o", required=True, help="output")
 
 
 args = parser.parse_args()
 
 pangolin_output =  str(args.p)
 background = str(args.b)
-od = str(args.o)
 
 def get_lineages_present(pangolin_output):
 
@@ -98,8 +97,7 @@ def make_dataframe(pangolin_output, background_data):
     return dataframe
 
 
-
 dataframe = make_dataframe(pangolin_output, background)
 
-dataframe.to_csv(od+"global_lineage_information.csv")
+dataframe.to_csv(str(args.o))
 
