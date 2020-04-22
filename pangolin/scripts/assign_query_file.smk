@@ -46,7 +46,6 @@ rule pass_query_hash:
         query_sequence.store("query_store",ids)
         shell("touch {output.t}")
 
-
 rule assign_lineages:
     input:
         rules.pass_query_hash.output.t,

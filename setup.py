@@ -17,7 +17,8 @@ setup(name='pangolin',
                 'pangolin/scripts/lineage_finder.py',
                 'pangolin/scripts/utils.py',
                 'pangolin/scripts/defining_snps.py',
-                'pangolin/scripts/prepare_package_data.smk'
+                'pangolin/scripts/report_results.py',
+                'pangolin/scripts/report_classes.py'
                 ],
       package_data={'pangolin':['config.yaml',
                                 'data/*']},

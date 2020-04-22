@@ -18,7 +18,8 @@ if config.get("guide_tree"):
 
 rule all:
     input:
-        config["outdir"] + "/lineage_report.csv"
+        config["outdir"] + "/lineage_report.csv",
+        config["outdir"] + "/global_lineage_information.csv"
 
 ##### Modules #####
 include: "assign_query_file.smk"

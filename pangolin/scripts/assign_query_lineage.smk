@@ -6,7 +6,8 @@ config["query_sequences"]=[i for i in config["query_sequences"].split(',')]
 
 rule all:
     input:
-        config["outdir"] + "/lineage_report.csv"
+        config["outdir"] + "/lineage_report.csv",
+        config["outdir"] + "/global_lineage_information.csv"
 
 rule expand_query_fasta:
     input:
@@ -111,3 +112,17 @@ rule gather_reports:
                     fw.write(f"{taxon},{lineage},{alrt},{bootstrap}\n")
         fw.close()
 
+rule report_results:
+    input:
+        csv = config["outdir"] + "/lineage_report.csv",
+        lineages_csv = config["lineages_csv"]
+    params:
+        outdir = config["outdir"]
+    output:
+        config["outdir"] + "/global_lineage_information.csv"
+    shell:
+        """
+        report_results.py  --p {input.csv} \
+        --b {input.lineages_csv} \
+        --o {params.outdir:q} 
+        """

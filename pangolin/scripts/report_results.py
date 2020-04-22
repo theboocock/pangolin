@@ -3,7 +3,7 @@ import argparse
 from collections import defaultdict
 import pandas as pd
 
-import class_defs as classes
+import report_classes as classes
 
 
 parser = argparse.ArgumentParser(description="Results generator script")
